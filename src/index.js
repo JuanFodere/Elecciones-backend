@@ -1,5 +1,10 @@
 const express = require('express');
+const cors = require('cors');
 const app = express();
+
+app.use(cors({ origin: 'http://localhost:4200' }));
+app.use(express.json());
+
 const votanteRoutes = require('./routes/votanteRoutes');
 const circuitoRoutes = require('./routes/circuitoRoutes');
 const votoRoutes = require('./routes/votoRoutes');
@@ -28,4 +33,5 @@ app.get('/', (req, res) => {
 })
 
 app.listen(3000);
+
 
