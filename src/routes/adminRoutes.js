@@ -26,3 +26,4 @@ router.post('/cargarParticipacion', cargarParticipación);
 router.post('/cargarPolicia', cargarPolicía);
 
 module.exports = router;
+
