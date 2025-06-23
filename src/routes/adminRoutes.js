@@ -12,6 +12,8 @@ const { cargarIntegracionLista } = require('../controllers/adminController');
 const { cargarPartidoPolítico } = require('../controllers/adminController');
 const { cargarParticipación } = require('../controllers/adminController');
 const { cargarPolicía } = require('../controllers/adminController');
+const { cargarVotante } = require('../controllers/adminController');
+const { cargarVotanteElección } = require('../controllers/adminController');
 
 router.post('/cargarEleccion', cargarEleccion);
 router.post('/cargarCircuito', cargarCircuito);
@@ -24,6 +26,8 @@ router.post('/cargarIntegracionLista', cargarIntegracionLista);
 router.post('/cargarPartidoPolitico', cargarPartidoPolítico);
 router.post('/cargarParticipacion', cargarParticipación);
 router.post('/cargarPolicia', cargarPolicía);
+router.post('/cargarVotante', cargarVotante);
+router.post('/cargarVotanteEleccion', cargarVotanteElección);
 
 module.exports = router;
 

@@ -137,5 +137,33 @@ const cargarPolicía = async (req, res) => {
   }
 }
 
+const cargarVotante = async (req, res) => {
+    const { CI, número_cc, serie_cc, nombre, apellido, fecha_nacimiento } = req.body;
 
-module.exports = { cargarEleccion, cargarCircuito, cargarEstablecimiento, cargarCandidato, cargarIntegrante, cargarPapeleta, cargarLista, cargarIntegracionLista, cargarPartidoPolítico, cargarParticipación, cargarPolicía };
+    try {
+    await db.query('INSERT into votante (CI, número_cc, serie_cc, nombre, apellido, fecha_nacimiento) VALUES (?, ?, ?, ?, ?, ?)', [ CI, número_cc, serie_cc, nombre, apellido, fecha_nacimiento ]);
+    res.json({ message: 'Votante registrado con éxito', exito: true });
+  } catch (error) {
+    console.error('Error al registrar el votante:', error);
+    res.status(500).json({ message: 'Error al registar el votante', exito: false });
+    error: error.message
+  }
+}
+
+const cargarVotanteElección = async (req, res) => {
+    const { CI_votante, fecha_elección, tipo_elección, circuito_asignado, circuito_votado } = req.body;
+
+    try {
+    await db.query('INSERT into votante_eleccion (CI_votante, fecha_elección, tipo_elección, circuito_asignado, circuito_votado) VALUES (?, ?, ?, ?, ?)', [ CI_votante, fecha_elección, tipo_elección, circuito_asignado, circuito_votado ]);
+    res.json({ message: 'Votante registrado con éxito', exito: true });
+  } catch (error) {
+    console.error('Error al registrar el votante:', error);
+    res.status(500).json({ message: 'Error al registar el votante', exito: false });
+    error: error.message
+  }
+}
+
+
+
+
+module.exports = { cargarEleccion, cargarCircuito, cargarEstablecimiento, cargarCandidato, cargarIntegrante, cargarPapeleta, cargarLista, cargarIntegracionLista, cargarPartidoPolítico, cargarParticipación, cargarPolicía, cargarVotante, cargarVotanteElección };
