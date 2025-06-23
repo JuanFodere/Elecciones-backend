@@ -19,5 +19,24 @@ const getCandidatos = async (req, res) => {
   }
 }
 
+const getPartidosEleccion = async (req, res) => {
+  const { fecha_elección, tipo_elección } = req.body;
 
-module.exports = {getCandidatos}
+  try {
+    const [partidos] = await db.query('SELECT partido FROM participación WHERE fecha_elección = ? AND tipo_elección = ?', [fecha_elección, tipo_elección]);
+
+    if (!partidos) {
+      return res.status(404).json({ message: 'Partidos no encontrados' });
+    }
+
+    res.json(partidos);
+  } catch (error) {
+    console.error('Error al obtener los partidos:', error);
+    res.status(500).json({ message: 'Error interno del servidor' });
+    error: error.message
+  }
+}
+
+
+
+module.exports = {getCandidatos, getPartidosEleccion};
