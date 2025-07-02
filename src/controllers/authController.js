@@ -48,7 +48,8 @@ const loginVotante = async (req, res) => {
 
 
 const loginMesa = async (req, res) => {
-  const { número, serie, contraseña } = req.body;
+  const { número, serie, contraseña, fecha } = req.body;
+  console.log("fecha", fecha);
 
   try {
     const [rows] = await db.query('SELECT * FROM votante WHERE número_cc = ? AND serie_cc = ?', [número, serie]);
@@ -59,13 +60,14 @@ const loginMesa = async (req, res) => {
     }
 
     const ci = integrante.CI
-    const [mesaRows] = await db.query('SELECT * FROM integrante_mesa WHERE CI = ?', [ci]);
+    const [mesaRows] = await db.query('SELECT * FROM integrante_mesa WHERE CI = ? AND fecha = ?', [ci, fecha]);
     const integrante2 = mesaRows[0];
+    console.log("integrante2", integrante2);
     if (contraseña != integrante2.contraseña) {
       return res.status(401).json({ message: 'Contraseña incorrecta' });
     }
 
-    res.json({ message: 'Inicio de sesión exitoso', autenticado: true });
+    res.json({ message: 'Inicio de sesión exitoso', autenticado: true, circuito: integrante2.ID_circuito});
   } catch (error) {
     console.error('Error al iniciar sesión:', error);
     res.status(500).json({ message: 'Error interno del servidor' });

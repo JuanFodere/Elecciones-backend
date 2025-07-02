@@ -116,7 +116,7 @@ const cargarParticipación = async (req, res) => {
 
     try {
     await db.query('INSERT into participación (fecha_elección, tipo_elección, partido) VALUES (?, ?, ?)', [ fecha_elección, tipo_elección, partido ]);
-    res.json({ message: 'Participación registrado con éxito registrado con éxito', exito: true });
+    res.json({ message: 'Participación registrado con éxito', exito: true });
   } catch (error) {
     res.status(500).json({ message: 'Error al registar la participación', exito: false });
     error: error.message
