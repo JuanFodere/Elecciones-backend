@@ -1,35 +1,37 @@
 const queryResultadoNacionalCircuito = `
 SELECT 
   CASE 
-    WHEN Voto.validez = 'válido' THEN CAST(Lista.número AS CHAR)
-    WHEN Voto.validez = 'en_blanco' THEN 'BLANCO'
-    WHEN Voto.validez = 'anulado' THEN 'ANULADO'
+    WHEN V.validez = 'válido' THEN CAST(L.número AS CHAR)
+    WHEN V.validez = 'en_blanco' THEN 'BLANCO'
+    WHEN V.validez = 'anulado' THEN 'ANULADO'
   END AS numero_lista,
+
   CASE 
-    WHEN Voto.validez = 'válido' THEN Integración_Listas.partido
-    WHEN Voto.validez = 'en_blanco' THEN 'BLANCO'
-    WHEN Voto.validez = 'anulado' THEN 'ANULADO'
+    WHEN V.validez = 'válido' THEN L.partido
+    WHEN V.validez = 'en_blanco' THEN 'BLANCO'
+    WHEN V.validez = 'anulado' THEN 'ANULADO'
   END AS partido,
-  COUNT(Voto.ID) AS total_votos
-FROM Voto
-JOIN Papeleta
-  ON Voto.ID_papeleta = Papeleta.ID
-LEFT JOIN Lista
-  ON Papeleta.ID = Lista.ID_papeleta
-LEFT JOIN Integración_Listas
-  ON Integración_Listas.ID_lista = Lista.ID_papeleta
-WHERE Papeleta.fecha_elección = ? AND Papeleta.tipo_elección = ? AND Voto.ID_circuito = ?
+
+  COUNT(*) AS total_votos
+
+FROM Voto V
+JOIN Papeleta P ON V.ID_papeleta = P.ID
+LEFT JOIN Lista L ON V.ID_lista = L.ID
+
+WHERE P.fecha_elección = ? AND P.tipo_elección = 'Nacional' AND V.Id_circuito = ?
+
 GROUP BY 
   CASE 
-    WHEN Voto.validez = 'válido' THEN CAST(Lista.número AS CHAR)
-    WHEN Voto.validez = 'en_blanco' THEN 'BLANCO'
-    WHEN Voto.validez = 'anulado' THEN 'ANULADO'
+    WHEN V.validez = 'válido' THEN CAST(L.número AS CHAR)
+    WHEN V.validez = 'en_blanco' THEN 'BLANCO'
+    WHEN V.validez = 'anulado' THEN 'ANULADO'
   END,
   CASE 
-    WHEN Voto.validez = 'válido' THEN Integración_Listas.partido
-    WHEN Voto.validez = 'en_blanco' THEN 'BLANCO'
-    WHEN Voto.validez = 'anulado' THEN 'ANULADO'
+    WHEN V.validez = 'válido' THEN L.partido
+    WHEN V.validez = 'en_blanco' THEN 'BLANCO'
+    WHEN V.validez = 'anulado' THEN 'ANULADO'
   END
+
 ORDER BY total_votos DESC;
 
 `;
@@ -37,65 +39,120 @@ ORDER BY total_votos DESC;
 const queryResultadoNacional = `
 SELECT 
   CASE 
-    WHEN Voto.validez = 'válido' THEN CAST(Lista.número AS CHAR)
-    WHEN Voto.validez = 'en_blanco' THEN 'BLANCO'
-    WHEN Voto.validez = 'anulado' THEN 'ANULADO'
+    WHEN V.validez = 'válido' THEN CAST(L.número AS CHAR)
+    WHEN V.validez = 'en_blanco' THEN 'BLANCO'
+    WHEN V.validez = 'anulado' THEN 'ANULADO'
   END AS numero_lista,
+
   CASE 
-    WHEN Voto.validez = 'válido' THEN Integración_Listas.partido
-    WHEN Voto.validez = 'en_blanco' THEN 'BLANCO'
-    WHEN Voto.validez = 'anulado' THEN 'ANULADO'
+    WHEN V.validez = 'válido' THEN L.partido
+    WHEN V.validez = 'en_blanco' THEN 'BLANCO'
+    WHEN V.validez = 'anulado' THEN 'ANULADO'
   END AS partido,
-  COUNT(Voto.ID) AS total_votos
-FROM Voto
-JOIN Papeleta
-  ON Voto.ID_papeleta = Papeleta.ID
-LEFT JOIN Lista
-  ON Papeleta.ID = Lista.ID_papeleta
-LEFT JOIN Integración_Listas
-  ON Integración_Listas.ID_lista = Lista.ID_papeleta
-WHERE Papeleta.fecha_elección = ? AND Papeleta.tipo_elección = ?
+
+  COUNT(*) AS total_votos
+
+FROM Voto V
+JOIN Papeleta P ON V.ID_papeleta = P.ID
+LEFT JOIN Lista L ON V.ID_lista = L.ID
+
+WHERE P.fecha_elección = ? AND P.tipo_elección = 'Nacional'
+
 GROUP BY 
   CASE 
-    WHEN Voto.validez = 'válido' THEN CAST(Lista.número AS CHAR)
-    WHEN Voto.validez = 'en_blanco' THEN 'BLANCO'
-    WHEN Voto.validez = 'anulado' THEN 'ANULADO'
+    WHEN V.validez = 'válido' THEN CAST(L.número AS CHAR)
+    WHEN V.validez = 'en_blanco' THEN 'BLANCO'
+    WHEN V.validez = 'anulado' THEN 'ANULADO'
   END,
   CASE 
-    WHEN Voto.validez = 'válido' THEN Integración_Listas.partido
-    WHEN Voto.validez = 'en_blanco' THEN 'BLANCO'
-    WHEN Voto.validez = 'anulado' THEN 'ANULADO'
+    WHEN V.validez = 'válido' THEN L.partido
+    WHEN V.validez = 'en_blanco' THEN 'BLANCO'
+    WHEN V.validez = 'anulado' THEN 'ANULADO'
   END
+
 ORDER BY total_votos DESC;
+
+
+`;
+
+const queryResultadoNacionalPorDepartamento = `
+SELECT 
+  CASE 
+    WHEN V.validez = 'válido' THEN CAST(L.número AS CHAR)
+    WHEN V.validez = 'en_blanco' THEN 'BLANCO'
+    WHEN V.validez = 'anulado' THEN 'ANULADO'
+  END AS numero_lista,
+
+  CASE 
+    WHEN V.validez = 'válido' THEN L.partido
+    WHEN V.validez = 'en_blanco' THEN 'BLANCO'
+    WHEN V.validez = 'anulado' THEN 'ANULADO'
+  END AS partido,
+
+  COUNT(*) AS total_votos
+
+FROM Voto V
+JOIN Papeleta P ON V.ID_papeleta = P.ID
+LEFT JOIN Lista L ON V.ID_lista = L.ID
+JOIN Circuito C ON V.Id_circuito = C.ID
+
+WHERE P.fecha_elección = ? AND P.tipo_elección = 'Nacional' AND C.departamento = ?
+
+GROUP BY 
+  CASE 
+    WHEN V.validez = 'válido' THEN CAST(L.número AS CHAR)
+    WHEN V.validez = 'en_blanco' THEN 'BLANCO'
+    WHEN V.validez = 'anulado' THEN 'ANULADO'
+  END,
+  CASE 
+    WHEN V.validez = 'válido' THEN L.partido
+    WHEN V.validez = 'en_blanco' THEN 'BLANCO'
+    WHEN V.validez = 'anulado' THEN 'ANULADO'
+  END
+
+ORDER BY total_votos DESC;
+
 
 `;
 
 const queryResultadoNacionalPorPartido = `
 SELECT 
-  CASE
-    WHEN Voto.validez = 'válido' THEN Integración_Listas.partido
-    WHEN Voto.validez = 'en_blanco' THEN 'BLANCO'
-    WHEN Voto.validez = 'anulado' THEN 'ANULADO'
+  CASE 
+    WHEN V.validez = 'válido' THEN CAST(L.número AS CHAR)
+    WHEN V.validez = 'en_blanco' THEN 'BLANCO'
+    WHEN V.validez = 'anulado' THEN 'ANULADO'
+  END AS numero_lista,
+
+  CASE 
+    WHEN V.validez = 'válido' THEN L.partido
+    WHEN V.validez = 'en_blanco' THEN 'BLANCO'
+    WHEN V.validez = 'anulado' THEN 'ANULADO'
   END AS partido,
-  COUNT(Voto.ID) AS total_votos
-FROM Voto
-JOIN Papeleta
-  ON Voto.ID_papeleta = Papeleta.ID
-LEFT JOIN Lista
-  ON Papeleta.ID = Lista.ID_papeleta
-LEFT JOIN Integración_Listas
-  ON Integración_Listas.ID_lista = Lista.ID_papeleta
-WHERE Papeleta.fecha_elección = ? AND Papeleta.tipo_elección = ?
+
+  COUNT(*) AS total_votos
+
+FROM Voto V
+JOIN Papeleta P ON V.ID_papeleta = P.ID
+LEFT JOIN Lista L ON P.ID = L.ID_papeleta
+
+WHERE P.fecha_elección = ? AND P.tipo_elección = 'Nacional'
+
 GROUP BY 
-  CASE
-    WHEN Voto.validez = 'válido' THEN Integración_Listas.partido
-    WHEN Voto.validez = 'en_blanco' THEN 'BLANCO'
-    WHEN Voto.validez = 'anulado' THEN 'ANULADO'
+  CASE 
+    WHEN V.validez = 'válido' THEN CAST(L.número AS CHAR)
+    WHEN V.validez = 'en_blanco' THEN 'BLANCO'
+    WHEN V.validez = 'anulado' THEN 'ANULADO'
+  END,
+  CASE 
+    WHEN V.validez = 'válido' THEN L.partido
+    WHEN V.validez = 'en_blanco' THEN 'BLANCO'
+    WHEN V.validez = 'anulado' THEN 'ANULADO'
   END
+
 ORDER BY total_votos DESC;
 
 
 `;
 
 
-module.exports = {queryResultadoNacionalCircuito, queryResultadoNacional, queryResultadoNacionalPorPartido};
+module.exports = {queryResultadoNacionalCircuito, queryResultadoNacional, queryResultadoNacionalPorPartido, queryResultadoNacionalPorDepartamento};

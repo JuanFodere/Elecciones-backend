@@ -30,6 +30,7 @@ const loginVotante = async (req, res) => {
   try {
     const [rows] = await db.query('SELECT * FROM votante WHERE número_cc = ? AND serie_cc = ?', [número, serie]);
     const votante = rows[0];
+    console.log("votante", votante);
 
     if (!votante) {
       return res.status(404).json({ message: 'Votante no encontrado' });
@@ -38,6 +39,7 @@ const loginVotante = async (req, res) => {
     if (ci != votante.CI) {
       return res.status(401).json({ message: 'Contraseña incorrecta' });
     }
+    console.log("si llega");
 
     res.json({ message: 'Inicio de sesión exitoso', autenticado: true });
   } catch (error) {
@@ -49,7 +51,7 @@ const loginVotante = async (req, res) => {
 
 const loginMesa = async (req, res) => {
   const { número, serie, contraseña, fecha } = req.body;
-  console.log("fecha", fecha);
+  console.log("fecha", fecha, contraseña);
 
   try {
     const [rows] = await db.query('SELECT * FROM votante WHERE número_cc = ? AND serie_cc = ?', [número, serie]);
