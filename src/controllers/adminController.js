@@ -141,6 +141,15 @@ const cargarVotante = async (req, res) => {
     const { CI, número_cc, serie_cc, nombre, apellido, fecha_nacimiento } = req.body;
 
     try {
+    const [rows] = await db.query('SELECT * FROM votante WHERE CI = ?', [CI]);
+
+    if (rows.length > 0) {
+      
+      return res.json({
+        message: 'La cédula ya está registrada.',
+        exito: false
+      });
+    }
     await db.query('INSERT into votante (CI, número_cc, serie_cc, nombre, apellido, fecha_nacimiento) VALUES (?, ?, ?, ?, ?, ?)', [ CI, número_cc, serie_cc, nombre, apellido, fecha_nacimiento ]);
     res.json({ message: 'Votante registrado con éxito', exito: true });
   } catch (error) {
