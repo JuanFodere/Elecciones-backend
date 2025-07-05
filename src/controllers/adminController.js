@@ -13,11 +13,15 @@ const cargarEleccion = async (req, res) => {
 }
 
 const cargarCircuito = async (req, res) => {
-    const { ID_establecimiento, departamento, localidad, barrio_zona } = req.body;
+    const { Id_establecimiento, departamento, localidad, barrio_zona } = req.body;
     const abierto = false;
-
+    
     try {
-    await db.query('INSERT into circuito (ID_establecimiento, abierto, departamento, localidad, barrio_zona) VALUES (?, ?, ?, ?, ?)', [ ID_establecimiento, abierto, departamento, localidad, barrio_zona ]);
+    const [rows] = await db.query('SELECT * FROM establecimiento WHERE ID = ?', [Id_establecimiento]);
+    if (rows.length < 1) { 
+      return res.json({ message: 'No existe este establecimiento.', exito: false });
+    }
+    await db.query('INSERT into circuito (ID_establecimiento, abierto, departamento, localidad, barrio_zona) VALUES (?, ?, ?, ?, ?)', [ Id_establecimiento, abierto, departamento, localidad, barrio_zona ]);
     res.json({ message: 'Circuito registrado con éxito', exito: true });
   } catch (error) {
     res.status(500).json({ message: 'Error al registar el circuito', exito: false });
@@ -38,11 +42,11 @@ const cargarEstablecimiento = async (req, res) => {
 }
 
 const cargarCandidato = async (req, res) => {
-    const { CI, partido, tipo_elección, fecha_elección } = req.body;
-    console.log("candidato:", { CI, partido, tipo_elección, fecha_elección });
+    const { CI } = req.body;
+    console.log("candidato:", { CI});
 
     try {
-    await db.query('INSERT into candidato (CI, partido, tipo_elección, fecha_elección) VALUES (?, ?, ?, ?)', [ CI, partido, tipo_elección, fecha_elección ]);
+    await db.query('INSERT into candidato (CI) VALUES (?)', [ CI ]);
     res.json({ message: 'Candidato registrado con éxito', exito: true });
   } catch (error) {
     res.status(500).json({ message: 'Error al registar el candidato', exito: false });
@@ -66,6 +70,10 @@ const cargarPapeleta = async (req, res) => {
     const { tipo, fecha_elección, tipo_elección } = req.body;
 
     try {
+    const [rows] = await db.query('SELECT * FROM papeleta WHERE tipo = ? AND fecha_elección = ? AND tipo_elección = ?', [tipo, fecha_elección, tipo_elección]);
+    if (rows.length > 0) {
+      return res.json({ message: 'Papeleta ya registrada para esta elección.', exito: false });
+    }
     await db.query('INSERT into papeleta (tipo, fecha_elección, tipo_elección) VALUES (?, ?, ?)', [ tipo, fecha_elección, tipo_elección ]);
     res.json({ message: 'Papeleta registrada con éxito', exito: true });
   } catch (error) {
@@ -75,10 +83,10 @@ const cargarPapeleta = async (req, res) => {
 }
 
 const cargarLista = async (req, res) => {
-    const { ID_papeleta, número, imagen } = req.body;
+    const { ID_papeleta, número, imagen, partido } = req.body;
 
     try {
-    await db.query('INSERT into lista (ID_papeleta, número, imagen) VALUES (?, ?, ?)', [ ID_papeleta, número, imagen ]);
+    await db.query('INSERT into lista (ID_papeleta, número, imagen, partido) VALUES (?, ?, ?, ?)', [ ID_papeleta, número, imagen, partido ]);
     res.json({ message: 'Lista registrada con éxito', exito: true });
   } catch (error) {
     res.status(500).json({ message: 'Error al registar la lista', exito: false });
