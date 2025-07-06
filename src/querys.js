@@ -1,3 +1,21 @@
+const getListas = `
+SELECT 
+  L.ID,
+  L.número AS numero_lista,
+  L.partido,
+  L.imagen,
+  IL.cargo,
+  V.CI,
+  V.nombre,
+  V.apellido
+FROM Lista L
+JOIN Papeleta P ON L.ID_papeleta = P.ID
+JOIN Integración_listas IL ON L.ID = IL.ID_lista
+JOIN Votante V ON IL.CI_candidato = V.CI
+WHERE P.tipo_elección = ? AND P.fecha_elección = ?;
+`;
+
+
 const queryResultadoNacionalCircuito = `
 SELECT 
   CASE 
@@ -155,4 +173,4 @@ ORDER BY total_votos DESC;
 `;
 
 
-module.exports = {queryResultadoNacionalCircuito, queryResultadoNacional, queryResultadoNacionalPorPartido, queryResultadoNacionalPorDepartamento};
+module.exports = {getListas, queryResultadoNacionalCircuito, queryResultadoNacional, queryResultadoNacionalPorPartido, queryResultadoNacionalPorDepartamento};
