@@ -64,25 +64,32 @@ const getResultadoNacionalPorDepartamento = async (req, res) => {
     console.error('Error al obtener los resultados:', error);
     res.status(500).json({ message: 'Error interno del servidor' });
   }
+
 }
 
 const getResultadoNacionalPorPartido = async (req, res) => {
-  const { fecha_elección, tipo_elección } = req.body;
+  console.log("llega al controlador");
+  const { fecha_elección } = req.body;
+  console.log("fecha_elección:", fecha_elección);
+
 
   try {
-    const [resultados] = await db.query(querys.queryResultadoNacionalPorPartido, [fecha_elección, tipo_elección]);
+    const [resultados] = await db.query(querys.queryResultadoNacionalPorPartido, [fecha_elección]);
 
 
     if (!resultados) {
       return res.status(404).json({ message: 'resultados no encontrados' });
     }
-
+    console.log(resultados)
     res.json(resultados);
   } catch (error) {
     console.error('Error al obtener los resultados:', error);
     res.status(500).json({ message: 'Error interno del servidor' });
   }
+  
 }
+
+
 
 
 module.exports = {getResultadoNacional, getResultadoNacionalPorCircuito, getResultadoNacionalPorPartido, getResultadoNacionalPorDepartamento};
