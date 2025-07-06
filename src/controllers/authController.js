@@ -52,7 +52,7 @@ const loginVotante = async (req, res) => {
       return res.status(400).json({ message: 'El votante ya ha votado en esta elección', autenticado: false });
     }
 
-    res.json({ message: 'Inicio de sesión exitoso', autenticado: true });
+    res.json({ message: 'Inicio de sesión exitoso', autenticado: true, CI_votante: votante.CI });
   } catch (error) {
     console.error('Error al iniciar sesión:', error);
     res.status(500).json({ message: 'Error interno del servidor' });
