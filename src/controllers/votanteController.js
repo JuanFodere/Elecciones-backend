@@ -60,4 +60,6 @@ const getAllVotantes = async (req, res) => {
 
 
 
+
+
 module.exports = {getVotantePorCi, getVotanteElección, getAllVotantes};

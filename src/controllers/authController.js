@@ -25,7 +25,9 @@ const loginAdmin = async (req, res) => {
 
 
 const loginVotante = async (req, res) => {
-  const { número, serie, ci } = req.body;
+  const { número, serie, ci, fecha_elección, tipo_elección } = req.body;
+  console.log("datos", fecha_elección, tipo_elección, ci);
+  
 
   try {
     const [rows] = await db.query('SELECT * FROM votante WHERE número_cc = ? AND serie_cc = ?', [número, serie]);
@@ -35,11 +37,20 @@ const loginVotante = async (req, res) => {
     if (!votante) {
       return res.status(404).json({ message: 'Votante no encontrado' });
     }
-
     if (ci != votante.CI) {
       return res.status(401).json({ message: 'Contraseña incorrecta' });
     }
-    console.log("si llega");
+    const [rows2] = await db.query('SELECT * FROM votante_eleccion WHERE CI_votante = ? AND fecha_elección = ? AND tipo_elección = ?', [ci, fecha_elección, tipo_elección]);
+    const votanteEleccion = rows2[0];
+    console.log("votanteEleccion", votanteEleccion);
+
+    if (!votanteEleccion) {
+      return res.status(404).json({ message: 'Votante no encontrado en la elección' });
+    }
+
+    if (votanteEleccion.circuito_votado) {
+      return res.status(400).json({ message: 'El votante ya ha votado en esta elección', autenticado: false });
+    }
 
     res.json({ message: 'Inicio de sesión exitoso', autenticado: true });
   } catch (error) {

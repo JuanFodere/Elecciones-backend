@@ -1,16 +1,18 @@
 const db = require('../db/connection');
 
 const confirmarAutoridad = async (req, res) => {
-  const { circuito, ci } = req.body;
+  const { ci, contraseña, fecha, ID_circuito } = req.body;
+  console.log(ci, contraseña, fecha, ID_circuito);
 
   try {
-    const [rows] = await db.query('SELECT * FROM integrante_mesa WHERE CI = ?', [ci]);
+    const [rows] = await db.query('SELECT * FROM integrante_mesa WHERE ID_circuito = ? and fecha = ?', [ID_circuito, fecha]);
     const integrante = rows[0];
 
     if (!integrante) {
       return res.status(404).json({ message: 'Integrante de mesa no encontrado' });
     }
-    if (circuito != integrante.ID_circuito) {
+    console.log(integrante);
+    if (ci != integrante.CI || contraseña != integrante.contraseña) {
       return res.status(400).json({ message: 'Autoridad no confirmada', autoridad: false});
     }
     res.json({ message: 'Autoridad confirmada', autoridad: true });
