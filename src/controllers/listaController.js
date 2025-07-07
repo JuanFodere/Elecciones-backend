@@ -25,27 +25,35 @@ const getListasElección = async (req, res) => {
 
 const getIdPapeleta = async (req, res) => {
   const { id } = req.body;
+  console.log('ID solicitado:', id);
 
   try {
-    const [ID_papeleta] = await db.query('SELECT ID_papeleta FROM lista WHERE ID = ?', [id]);
+const [rows] = await db.query(
+  'SELECT * FROM lista JOIN papeleta ON papeleta.ID = lista.ID_papeleta WHERE lista.ID = ?',
+  [id]
+);    const papeleta = rows[0];
+    console.log("PAPELETA: ", papeleta.id);
+    
 
-    if (!ID_papeleta) {
+    if (!papeleta) {
       return res.status(404).json({ message: 'Papeleta no encontrada' });
     }
-    console.log(ID_papeleta)
-    res.json({IDpapeleta: ID_papeleta});
+
+console.log("PAPELETA: ", papeleta.ID_papeleta);
+res.json({ IDpapeleta: papeleta.ID_papeleta });
+
   } catch (error) {
     console.error('Error al obtener la papeleta:', error);
     res.status(500).json({ message: 'Error interno del servidor' });
-    error: error.message
   }
-}
+};
+
 
 const getPapeletaEleccion = async (req, res) => {
   const { tipo, fecha_elección, tipo_elección } = req.body;
 
   try {
-    const [rows] = await db.query('SELECT * FROM papeleta WHERE tipo = ? AND fecha_elección = ? AND tipo_elección = ?', [tipo, fecha_elección, tipo_elección]);
+    const [rows] = await db.query('SELECT * FROM lista WHERE tipo = ? AND fecha_elección = ? AND tipo_elección = ?', [tipo, fecha_elección, tipo_elección]);
     const [papeleta] = rows[0];
 
     if (!papeleta) {
